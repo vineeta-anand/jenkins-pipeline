@@ -8,12 +8,7 @@ pipeline{
           label 's1'
 	     }
 		 stages{
-		        stage('Checkout scm')
-				{
-				steps{
-				git changelog: false, poll: false, url: 'https://github.com/vineeta-anand/jenkins-pipeline.git'
-				}
-				}
+		        
 		        stage('Check if docker container is running'){
 			         steps{
 					 sh '''
