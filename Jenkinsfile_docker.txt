@@ -1,0 +1,46 @@
+pipeline{
+    agent{
+          label 's1'
+	     }
+		 stages{
+		        stage('Checkout scm')
+				{
+				steps{
+				git changelog: false, poll: false, url: 'https://github.com/vineeta-anand/jenkins-pipeline.git'
+				}
+				}
+		        stage('Check if docker container is running'){
+			         steps{
+					 sh """
+                     ls -ltr
+                     
+                     sudo docker ps | grep vineetashastri/mytry | cut -d " " -f1
+ 
+                     if [ -z $(sudo docker ps | grep vineetashastri/mytry | cut -d " " -f1)]; then
+                     echo "No Docker container is running"
+                     else
+                     sudo docker stop $(sudo docker ps | grep vineetashastri/mytry | cut -d " " -f1)
+                     fi    
+					 """
+                     
+					 }
+			                     }
+								 
+					stage('Build Image')
+					{
+					steps{
+					 #Build Image
+                     sudo docker build -t vineetashastri/mytry .
+                     sudo docker images
+					 }
+					 }
+					 stage('Run docker Image')
+					{
+					steps{
+					 #Run image
+                     sudo docker run vineetashastri/mytry 
+					 }
+					 }
+			}
+		}
+				
