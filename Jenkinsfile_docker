@@ -1,0 +1,65 @@
+pipeline{
+    environment {
+    registry = "vineetashastri/mytry"
+    registryCredential = 'dockerhub_id'
+    dockerImage = ''
+  }
+    agent{
+          label 's1'
+	     }
+		 stages{
+		        stage('Checkout scm')
+				{
+				steps{
+				git changelog: false, poll: false, url: 'https://github.com/vineeta-anand/jenkins-pipeline.git'
+				}
+				}
+		        stage('Check if docker container is running'){
+			         steps{
+					 sh '''
+                     ls -ltr
+                     
+                     sudo docker ps | grep vineetashastri/mytry | cut -d " " -f1
+ 
+                     if [ -z $(sudo docker ps | grep vineetashastri/mytry | cut -d " " -f1)]; then
+                     echo "No Docker container is running"
+                     else
+                     sudo docker stop $(sudo docker ps | grep vineetashastri/mytry | cut -d " " -f1)
+                     fi    
+					 '''
+                     
+					 }
+			                     }
+								 
+					stage('Build Image')
+					{
+					steps{
+					 //build image
+					 script {
+                     dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                         }
+					 }
+					 }
+					 stage('Run docker Image')
+					{
+					steps{
+					 //run image
+					 sh '''
+                     sudo docker run $registry:$BUILD_NUMBER
+					 '''
+					 }
+					 }
+					 stage('Push Image') {
+                      steps{
+                        script {
+                           docker.withRegistry( '', registryCredential ) {
+                           dockerImage.push()
+          }
+        }
+      }
+    }
+					 
+					
+			}
+		}
+				
