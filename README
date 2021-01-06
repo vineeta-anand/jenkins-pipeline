@@ -1,0 +1,9 @@
+#######################################
+To create docker image and push to docker hub registry. Integrated docker with Jenkins.
+
+Steps:
+1. Install jenkins on server.
+2. Install docker plugin on jenkins ( Manage Jenkins > Manage Plugins > Available > Docker ).
+3. Create dockerhub_id creadential. ( Manage Jenkins > Manage Creadentials > global > add creadential > username with password - provide docker hub username and password).
+4. Create new Jenkins pipeline, use pipeline script using scm, provide git url and Jenkinsfile path.
+5. Trigger the build.

@@ -3,7 +3,7 @@ pipeline{
     registry = "vineetashastri/mytry"
     registryCredential = 'dockerhub_id'
     dockerImage = ''
-  }
+                }
     agent{
           label 's1'
 	     }
